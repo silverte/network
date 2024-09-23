@@ -23,25 +23,19 @@ module "tgw" {
   enable_default_route_table_association = false
   enable_default_route_table_propagation = false
 
+  tgw_route_table_tags = merge(
+    local.tags,
+    {
+      Name = "tgwr-${var.service}-hub"
+    }
+  )
+
   vpc_attachments = {
     vpc_network = {
       vpc_id       = module.vpc_network.vpc_id
       subnet_ids   = module.vpc_network.redshift_subnets
       dns_support  = true
       ipv6_support = false
-
-      transit_gateway_default_route_table_association = false
-      transit_gateway_default_route_table_propagation = false
-
-      tgw_routes = [
-        {
-          destination_cidr_block = "10.223.0.0/16"
-        },
-        {
-          blackhole              = true
-          destination_cidr_block = "0.0.0.0/0"
-        }
-      ]
       tags = merge(
         local.tags,
         {
@@ -52,15 +46,6 @@ module "tgw" {
     vpc_dev = {
       vpc_id     = module.vpc_dev.vpc_id
       subnet_ids = module.vpc_dev.redshift_subnets
-
-      transit_gateway_default_route_table_association = false
-      transit_gateway_default_route_table_propagation = false
-
-      tgw_routes = [
-        {
-          destination_cidr_block = "10.222.0.0/16"
-        }
-      ]
       tags = merge(
         local.tags,
         {
@@ -71,15 +56,6 @@ module "tgw" {
     vpc_sandbox = {
       vpc_id     = module.vpc_sandbox.vpc_id
       subnet_ids = module.vpc_sandbox.redshift_subnets
-
-      transit_gateway_default_route_table_association = false
-      transit_gateway_default_route_table_propagation = false
-
-      tgw_routes = [
-        {
-          destination_cidr_block = "10.221.0.0/16"
-        }
-      ]
       tags = merge(
         local.tags,
         {
@@ -98,4 +74,61 @@ module "tgw" {
       Name = "tgw-${var.service}"
     }
   )
+}
+
+# tgw spoke route table
+resource "aws_ec2_transit_gateway_route_table" "spoke" {
+  depends_on         = [module.tgw]
+  transit_gateway_id = module.tgw[0].ec2_transit_gateway_id
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "tgwr-${var.service}-spoke"
+    }
+  )
+}
+
+# hub add route
+resource "aws_ec2_transit_gateway_route" "hub_route_dev" {
+  depends_on                     = [module.tgw]
+  destination_cidr_block         = "10.222.0.0/16"
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_dev"].id
+  transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
+}
+
+resource "aws_ec2_transit_gateway_route" "hub_route_sandbox" {
+  depends_on                     = [module.tgw]
+  destination_cidr_block         = "10.221.0.0/16"
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_sandbox"].id
+  transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
+}
+
+# hub route table association
+resource "aws_ec2_transit_gateway_route_table_association" "hub" {
+  depends_on                     = [module.tgw]
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_network"].id
+  transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
+}
+
+
+# spoke add route
+resource "aws_ec2_transit_gateway_route" "spoke_route" {
+  depends_on                     = [module.tgw]
+  destination_cidr_block         = "10.223.0.0/16"
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_network"].id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
+}
+
+# spoke route table association
+resource "aws_ec2_transit_gateway_route_table_association" "spoke_dev" {
+  depends_on                     = [module.tgw]
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_dev"].id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "spoke_sandbox" {
+  depends_on                     = [module.tgw]
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_sandbox"].id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
 }
