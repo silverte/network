@@ -6,7 +6,7 @@ module "security_group_alb_ingress" {
   name            = "scg-${var.service}-${var.environment}-alb-ingress"
   use_name_prefix = false
   description     = "Security group for ALB ingress "
-  vpc_id          = module.vpc.vpc_id
+  vpc_id          = module.vpc_network.vpc_id
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
   ingress_rules       = ["https-443-tcp", "all-icmp"]

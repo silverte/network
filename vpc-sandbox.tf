@@ -2,21 +2,21 @@
 # VPC Module
 # reference: https://github.com/terraform-aws-modules/terraform-aws-vpc
 ################################################################################
-module "vpc_dev" {
+module "vpc_sandbox" {
   source     = "terraform-aws-modules/vpc/aws"
   version    = "5.13.0"
-  create_vpc = var.enable_vpc_dev
+  create_vpc = var.enable_vpc_sandbox
 
   # Details
-  name = "vpc-${var.service}-dev"
-  cidr = var.cidr_dev
+  name = "vpc-${var.service}-sandbox"
+  cidr = var.cidr_sandbox
   azs  = local.azs
-  # public_subnets      = var.public_subnets_dev
-  private_subnets     = var.private_subnets_dev
-  intra_subnets       = var.endpoint_subnets_dev
-  database_subnets    = var.database_subnets_dev
-  elasticache_subnets = var.elb_subnets_dev
-  redshift_subnets    = var.tgw_attach_subnets_dev
+  # public_subnets      = var.public_subnets_sandbox
+  private_subnets     = var.private_subnets_sandbox
+  intra_subnets       = var.endpoint_subnets_sandbox
+  database_subnets    = var.database_subnets_sandbox
+  elasticache_subnets = var.elb_subnets_sandbox
+  redshift_subnets    = var.tgw_attach_subnets_sandbox
 
   manage_default_route_table    = false
   manage_default_network_acl    = false
@@ -29,12 +29,12 @@ module "vpc_dev" {
   create_redshift_subnet_group    = false
 
   # Tag subnets
-  # public_subnet_names      = ["sub-${var.service}-dev-pub-a", "sub-${var.service}-dev-pub-c"]
-  private_subnet_names     = ["sub-${var.service}-dev-pri-a", "sub-${var.service}-dev-pri-c"]
-  database_subnet_names    = ["sub-${var.service}-dev-db-a", "sub-${var.service}-dev-db-c"]
-  intra_subnet_names       = ["sub-${var.service}-dev-ep-a", "sub-${var.service}-dev-ep-c"]
-  elasticache_subnet_names = ["sub-${var.service}-dev-elb-a", "sub-${var.service}-dev-elb-c"]
-  redshift_subnet_names    = ["sub-${var.service}-dev-tgw-a", "sub-${var.service}-dev-tgw-c"]
+  # public_subnet_names      = ["sub-${var.service}-sandbox-pub-a", "sub-${var.service}-sandbox-pub-c"]
+  private_subnet_names     = ["sub-${var.service}-sandbox-pri-a", "sub-${var.service}-sandbox-pri-c"]
+  database_subnet_names    = ["sub-${var.service}-sandbox-db-a", "sub-${var.service}-sandbox-db-c"]
+  intra_subnet_names       = ["sub-${var.service}-sandbox-ep-a", "sub-${var.service}-sandbox-ep-c"]
+  elasticache_subnet_names = ["sub-${var.service}-sandbox-elb-a", "sub-${var.service}-sandbox-elb-c"]
+  redshift_subnet_names    = ["sub-${var.service}-sandbox-tgw-a", "sub-${var.service}-sandbox-tgw-c"]
 
   # Routing
   create_database_subnet_route_table    = true
@@ -42,31 +42,31 @@ module "vpc_dev" {
   create_redshift_subnet_route_table    = true
 
   # Tag route table
-  # public_route_table_tags      = { "Name" : "route-${var.service}-dev-pub" }
-  private_route_table_tags     = { "Name" : "route-${var.service}-dev-pri" }
-  database_route_table_tags    = { "Name" : "route-${var.service}-dev-db" }
-  intra_route_table_tags       = { "Name" : "route-${var.service}-dev-ep" }
-  elasticache_route_table_tags = { "Name" : "route-${var.service}-dev-elb" }
-  redshift_route_table_tags    = { "Name" : "route-${var.service}-dev-tgw" }
+  # public_route_table_tags      = { "Name" : "route-${var.service}-sandbox-pub" }
+  private_route_table_tags     = { "Name" : "route-${var.service}-sandbox-pri" }
+  database_route_table_tags    = { "Name" : "route-${var.service}-sandbox-db" }
+  intra_route_table_tags       = { "Name" : "route-${var.service}-sandbox-ep" }
+  elasticache_route_table_tags = { "Name" : "route-${var.service}-sandbox-elb" }
+  redshift_route_table_tags    = { "Name" : "route-${var.service}-sandbox-tgw" }
 
-  igw_tags = { "Name" : "igw-${var.service}-dev" }
+  igw_tags = { "Name" : "igw-${var.service}-sandbox" }
 
   # NAT Gateways - Outbound Communication
-  enable_nat_gateway = var.enable_nat_gateway_dev
-  single_nat_gateway = var.single_nat_gateway_dev
-  nat_gateway_tags   = { "Name" : "nat-${var.service}-dev" }
-  nat_eip_tags       = { "Name" : "eip-${var.service}-dev" }
+  enable_nat_gateway = var.enable_nat_gateway_sandbox
+  single_nat_gateway = var.single_nat_gateway_sandbox
+  nat_gateway_tags   = { "Name" : "nat-${var.service}-sandbox" }
+  nat_eip_tags       = { "Name" : "eip-${var.service}-sandbox" }
 
   # DNS Parameters in VPC
   enable_dns_hostnames = true
   enable_dns_support   = true
 
   # Flow logs
-  enable_flow_log                       = var.enable_vpc_flow_log_dev
+  enable_flow_log                       = var.enable_vpc_flow_log_sandbox
   flow_log_destination_type             = "s3"
-  flow_log_destination_arn              = var.vpc_flow_log_s3_arn_dev
+  flow_log_destination_arn              = var.vpc_flow_log_s3_arn_sandbox
   flow_log_max_aggregation_interval     = 600
-  vpc_flow_log_iam_role_name            = "role-${var.service}-dev-vpc-flow-log"
+  vpc_flow_log_iam_role_name            = "role-${var.service}-sandbox-vpc-flow-log"
   vpc_flow_log_iam_role_use_name_prefix = false
   create_flow_log_cloudwatch_log_group  = true
   create_flow_log_cloudwatch_iam_role   = true
@@ -74,7 +74,7 @@ module "vpc_dev" {
   vpc_flow_log_tags = merge(
     local.tags,
     {
-      "Name" = "vpc-${var.service}-dev-flow-logs"
+      "Name" = "vpc-${var.service}-sandbox-flow-logs"
     }
   )
 
@@ -85,7 +85,7 @@ module "vpc_dev" {
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
     # Tags subnets for Karpenter auto-discovery
-    "karpenter.sh/discovery" = "eks-${var.service}-dev"
+    "karpenter.sh/discovery" = "eks-${var.service}-sandbox"
   }
 
   # tags for the VPC
@@ -137,36 +137,36 @@ module "vpc_dev" {
 # }
 
 # Fully private cluster only
-module "vpc_endpoints_dev" {
+module "vpc_endpoints_sandbox" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "~> 5.13.0"
-  create  = var.enable_vpc_dev
+  create  = var.enable_vpc_sandbox
 
-  vpc_id = module.vpc_dev.vpc_id
+  vpc_id = module.vpc_sandbox.vpc_id
 
   # Security group
   create_security_group      = true
-  security_group_name        = "scg-${var.service}-dev-endpoint"
+  security_group_name        = "scg-${var.service}-sandbox-endpoint"
   security_group_description = "VPC endpoint security group"
   security_group_rules = {
     ingress_https = {
       description = "HTTPS from VPC"
-      cidr_blocks = [module.vpc_dev.vpc_cidr_block]
+      cidr_blocks = [module.vpc_sandbox.vpc_cidr_block]
     }
   }
   security_group_tags = merge(
     local.tags,
-    { "Name" = "scg-${var.service}-dev-endpoint"
+    { "Name" = "scg-${var.service}-sandbox-endpoint"
   })
 
   endpoints = merge({
     s3 = {
       service         = "s3"
       service_type    = "Gateway"
-      route_table_ids = module.vpc_dev.private_route_table_ids
+      route_table_ids = module.vpc_sandbox.private_route_table_ids
       tags = merge(
         local.tags,
-      { "Name" = "ep-${var.service}-dev-gw-s3" })
+      { "Name" = "ep-${var.service}-sandbox-gw-s3" })
     }
     },
     #   { for service in toset(["autoscaling", "ecr.api", "ecr.dkr", "ec2", "ec2messages", "elasticloadbalancing", "sts", "kms", "logs", "ssm", "ssmmessages"]) :

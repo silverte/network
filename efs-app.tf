@@ -11,7 +11,7 @@ module "efs-app" {
   creation_token = "efs-${var.service}-${var.environment}-${var.efs_app_name}"
   encrypted      = true
   # Used to create a file system that uses One Zone storage classes
-  availability_zone_name = module.vpc.azs[0]
+  availability_zone_name = module.vpc_network.azs[0]
 
   # performance_mode = "maxIO"
   # NB! PROVISIONED TROUGHPUT MODE WITH 256 MIBPS IS EXPENSIVE ~$1500/month
@@ -44,18 +44,18 @@ module "efs-app" {
   # one zone class only!
   mount_targets = {
     "${local.azs[0]}" = {
-      subnet_id = module.vpc.private_subnets[0]
+      subnet_id = module.vpc_network.private_subnets[0]
     }
   }
   security_group_name            = "scg-${var.service}-${var.environment}-efs-${var.efs_app_name}"
   security_group_use_name_prefix = false
   security_group_description     = "EFS security group"
-  security_group_vpc_id          = module.vpc.vpc_id
+  security_group_vpc_id          = module.vpc_network.vpc_id
   security_group_rules = {
     vpc = {
       # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
       description = "NFS ingress from VPC private subnets"
-      cidr_blocks = module.vpc.private_subnets_cidr_blocks
+      cidr_blocks = module.vpc_network.private_subnets_cidr_blocks
     }
   }
 

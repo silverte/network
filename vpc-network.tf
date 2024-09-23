@@ -23,6 +23,11 @@ module "vpc_network" {
   manage_default_security_group = false
   manage_default_vpc            = false
 
+  # don't create Subnet Group 
+  create_database_subnet_group    = false
+  create_elasticache_subnet_group = false
+  create_redshift_subnet_group    = false
+
   # Tag subnets
   public_subnet_names      = ["sub-${var.service}-network-pub-a", "sub-${var.service}-network-pub-c"]
   private_subnet_names     = ["sub-${var.service}-network-pri-a", "sub-${var.service}-network-pri-c"]
@@ -137,7 +142,7 @@ module "vpc_endpoints_network" {
   version = "~> 5.13.0"
   create  = var.enable_vpc_network
 
-  vpc_id = module.vpc.vpc_id
+  vpc_id = module.vpc_network.vpc_id
 
   # Security group
   create_security_group      = true
@@ -146,7 +151,7 @@ module "vpc_endpoints_network" {
   security_group_rules = {
     ingress_https = {
       description = "HTTPS from VPC"
-      cidr_blocks = [module.vpc.vpc_cidr_block]
+      cidr_blocks = [module.vpc_network.vpc_cidr_block]
     }
   }
   security_group_tags = merge(
@@ -158,7 +163,7 @@ module "vpc_endpoints_network" {
     s3 = {
       service         = "s3"
       service_type    = "Gateway"
-      route_table_ids = module.vpc.private_route_table_ids
+      route_table_ids = module.vpc_network.private_route_table_ids
       tags = merge(
         local.tags,
       { "Name" = "ep-${var.service}-network-gw-s3" })

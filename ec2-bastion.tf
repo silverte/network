@@ -11,8 +11,8 @@ module "ec2_bastion" {
 
   ami                         = data.aws_ami.ec2_bastion.id
   instance_type               = var.ec2_bastion_instance_type
-  availability_zone           = element(module.vpc.azs, 0)
-  subnet_id                   = element(module.vpc.public_subnets, 0)
+  availability_zone           = element(module.vpc_network.azs, 0)
+  subnet_id                   = element(module.vpc_network.public_subnets, 0)
   vpc_security_group_ids      = [module.security_group_ec2_bastion.security_group_id]
   associate_public_ip_address = true
   disable_api_stop            = false
@@ -99,7 +99,7 @@ module "security_group_ec2_bastion" {
   name            = "scg-${var.service}-${var.environment}-bastion"
   use_name_prefix = false
   description     = "Security group for EC2 Bastion"
-  vpc_id          = module.vpc.vpc_id
+  vpc_id          = module.vpc_network.vpc_id
 
   # ingress_cidr_blocks = ["0.0.0.0/0"]
   # ingress_rules       = ["http-80-tcp", "all-icmp"]

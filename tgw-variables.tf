@@ -4,3 +4,9 @@ variable "create_tgw" {
   type        = bool
   default     = false
 }
+
+# Trangit gateway CIDR Blocks
+variable "tgw_cidr_blocks" {
+  description = "Trangit gateway CIDR Blocks"
+  type        = list(string)
+}
