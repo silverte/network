@@ -81,3 +81,14 @@ variable "vpc_flow_log_s3_arn_network" {
   type        = string
   default     = ""
 }
+
+# Customer Gateway Public IP Variable
+variable "customer_gateway_static_public_ip" {
+  type    = string
+  default = ""
+}
+# Customer Gateway BGP ASN Variable
+variable "customer_gateway_bgp_asn" {
+  type    = number
+  default = 65000
+}

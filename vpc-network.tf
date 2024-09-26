@@ -61,6 +61,20 @@ module "vpc_network" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
+  # Customer Gateway
+  customer_gateways = {
+    IP = {
+      bgp_asn    = var.customer_gateway_bgp_asn
+      ip_address = var.customer_gateway_static_public_ip
+    }
+  }
+  customer_gateway_tags = merge(
+    local.tags,
+    {
+      "Name" = "cgw-${var.service}-network"
+    }
+  )
+
   # Flow logs
   enable_flow_log                       = var.enable_vpc_flow_log_network
   flow_log_destination_type             = "s3"

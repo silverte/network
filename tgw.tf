@@ -39,7 +39,7 @@ module "tgw" {
       tags = merge(
         local.tags,
         {
-          Name = "tgwa-${var.service}-network"
+          Name = "tgwa-vpc-${var.service}-network"
         }
       )
     },
@@ -49,7 +49,7 @@ module "tgw" {
       tags = merge(
         local.tags,
         {
-          Name = "tgwa-${var.service}-dev"
+          Name = "tgwa-vpc-${var.service}-dev"
         }
       )
     },
@@ -59,7 +59,7 @@ module "tgw" {
       tags = merge(
         local.tags,
         {
-          Name = "tgwa-${var.service}-sandbox"
+          Name = "tgwa-vpc-${var.service}-sandbox"
         }
       )
     },
@@ -76,17 +76,11 @@ module "tgw" {
   )
 }
 
-# tgw spoke route table
-resource "aws_ec2_transit_gateway_route_table" "spoke" {
-  depends_on         = [module.tgw]
-  transit_gateway_id = module.tgw[0].ec2_transit_gateway_id
-
-  tags = merge(
-    local.tags,
-    {
-      Name = "tgwr-${var.service}-spoke"
-    }
-  )
+# hub route table association
+resource "aws_ec2_transit_gateway_route_table_association" "hub" {
+  depends_on                     = [module.tgw]
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_network"].id
+  transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
 }
 
 # hub add route
@@ -104,20 +98,17 @@ resource "aws_ec2_transit_gateway_route" "hub_route_sandbox" {
   transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
 }
 
-# hub route table association
-resource "aws_ec2_transit_gateway_route_table_association" "hub" {
-  depends_on                     = [module.tgw]
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_network"].id
-  transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
-}
+# spoke route table
+resource "aws_ec2_transit_gateway_route_table" "spoke" {
+  depends_on         = [module.tgw]
+  transit_gateway_id = module.tgw[0].ec2_transit_gateway_id
 
-
-# spoke add route
-resource "aws_ec2_transit_gateway_route" "spoke_route" {
-  depends_on                     = [module.tgw]
-  destination_cidr_block         = "10.223.0.0/16"
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_network"].id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
+  tags = merge(
+    local.tags,
+    {
+      Name = "tgwr-${var.service}-spoke"
+    }
+  )
 }
 
 # spoke route table association
@@ -130,5 +121,13 @@ resource "aws_ec2_transit_gateway_route_table_association" "spoke_dev" {
 resource "aws_ec2_transit_gateway_route_table_association" "spoke_sandbox" {
   depends_on                     = [module.tgw]
   transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_sandbox"].id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
+}
+
+# spoke add route
+resource "aws_ec2_transit_gateway_route" "spoke_route" {
+  depends_on                     = [module.tgw]
+  destination_cidr_block         = "10.223.0.0/16"
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_network"].id
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
 }

@@ -1,13 +1,13 @@
 # Whether to Create DX Connection
 variable "create_dx_connection" {
   type    = bool
-  default = true
+  default = false
 }
 
 # Whether to Create DX Gateway Association
 variable "create_dx_gateway_association" {
   type    = bool
-  default = true
+  default = false
 }
 
 # Whether to Create DX Gateway
