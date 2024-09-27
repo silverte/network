@@ -30,7 +30,7 @@ module "vpn_gateway" {
   tags = merge(
     local.tags,
     {
-      Name = "vpn-${var.service}-network"
+      Name = "vpn-${var.service}-${var.environment}"
     },
   )
 }

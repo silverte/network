@@ -5,7 +5,7 @@
 module "vpc_dev" {
   source     = "terraform-aws-modules/vpc/aws"
   version    = "5.13.0"
-  create_vpc = var.enable_vpc_dev
+  create_vpc = var.create_vpc_dev
 
   # Details
   name = "vpc-${var.service}-dev"
@@ -140,7 +140,7 @@ module "vpc_dev" {
 module "vpc_endpoints_dev" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "~> 5.13.0"
-  create  = var.enable_vpc_dev
+  create  = var.create_vpc_dev
 
   vpc_id = module.vpc_dev.vpc_id
 

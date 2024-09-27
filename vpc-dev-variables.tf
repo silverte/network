@@ -62,7 +62,7 @@ variable "single_nat_gateway_dev" {
 }
 
 # Whether to create an VPC (True or False)
-variable "enable_vpc_dev" {
+variable "create_vpc_dev" {
   description = "Whether to create an VPC"
   type        = bool
   default     = false

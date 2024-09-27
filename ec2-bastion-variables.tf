@@ -27,7 +27,7 @@ variable "ec2_bastion_ami_filter_value" {
 }
 
 # Whether to create an EC2 Bastion (True or False)
-variable "enable_ec2_bastion" {
+variable "create_ec2_bastion" {
   description = "Whether to create an EC2 Bastion"
   type        = bool
   default     = true

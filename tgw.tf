@@ -8,7 +8,7 @@ module "tgw" {
   create_tgw = var.create_tgw
   count      = var.create_tgw ? 1 : 0
 
-  name            = "tgw-${var.service}"
+  name            = "tgw-${var.service}-${var.environment}"
   description     = "TGW shared with several other AWS accounts"
   amazon_side_asn = 64532
 
@@ -26,7 +26,7 @@ module "tgw" {
   tgw_route_table_tags = merge(
     local.tags,
     {
-      Name = "tgwr-${var.service}-hub"
+      Name = "tgwrt-${var.service}-${var.environment}-hub"
     }
   )
 
@@ -39,7 +39,7 @@ module "tgw" {
       tags = merge(
         local.tags,
         {
-          Name = "tgwa-vpc-${var.service}-network"
+          Name = "tgwa-vpc-${var.service}-${var.environment}"
         }
       )
     },
@@ -71,7 +71,7 @@ module "tgw" {
   tags = merge(
     local.tags,
     {
-      Name = "tgw-${var.service}"
+      Name = "tgw-${var.service}-${var.environment}"
     }
   )
 }
@@ -106,7 +106,7 @@ resource "aws_ec2_transit_gateway_route_table" "spoke" {
   tags = merge(
     local.tags,
     {
-      Name = "tgwr-${var.service}-spoke"
+      Name = "tgwrt-${var.service}-${var.environment}-spoke"
     }
   )
 }

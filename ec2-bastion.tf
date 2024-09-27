@@ -5,7 +5,7 @@
 
 module "ec2_bastion" {
   source = "terraform-aws-modules/ec2-instance/aws"
-  create = var.enable_ec2_bastion
+  create = var.create_ec2_bastion
 
   name = "ec2-${var.service}-${var.environment}-bastion"
 
@@ -94,7 +94,7 @@ module "ec2_bastion" {
 module "security_group_ec2_bastion" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
-  create  = var.enable_ec2_bastion
+  create  = var.create_ec2_bastion
 
   name            = "scg-${var.service}-${var.environment}-bastion"
   use_name_prefix = false

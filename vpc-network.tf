@@ -5,7 +5,7 @@
 module "vpc_network" {
   source     = "terraform-aws-modules/vpc/aws"
   version    = "5.13.0"
-  create_vpc = var.enable_vpc_network
+  create_vpc = var.create_vpc_network
 
   # Details
   name                = "vpc-${var.service}-network"
@@ -154,7 +154,7 @@ module "vpc_network" {
 module "vpc_endpoints_network" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "~> 5.13.0"
-  create  = var.enable_vpc_network
+  create  = var.create_vpc_network
 
   vpc_id = module.vpc_network.vpc_id
 

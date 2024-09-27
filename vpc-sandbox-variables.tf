@@ -62,7 +62,7 @@ variable "single_nat_gateway_sandbox" {
 }
 
 # Whether to create an VPC (True or False)
-variable "enable_vpc_sandbox" {
+variable "create_vpc_sandbox" {
   description = "Whether to create an VPC"
   type        = bool
   default     = false
