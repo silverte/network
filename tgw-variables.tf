@@ -9,4 +9,5 @@ variable "create_tgw" {
 variable "tgw_cidr_blocks" {
   description = "Trangit gateway CIDR Blocks"
   type        = list(string)
+  default     = []
 }

@@ -1,3 +1,42 @@
+terraform {
+  # Set minimum required versions for providers using lazy matching
+  required_version = "~> 1.9.7"
+
+  # Configure the S3 backend
+  backend "s3" {
+    bucket = "s3-esp-network-terraform-state"
+    key    = "terraform.tfstate"
+    region = "ap-northeast-2"
+  }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.70.0"
+    }
+    # helm = {
+    #   source  = "hashicorp/helm"
+    #   version = ">= 2.7"
+    # }
+    # kubectl = {
+    #   source  = "alekc/kubectl"
+    #   version = ">= 2.0"
+    # }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6.1"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0.5"
+    }
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+      version = "~> 2.3.4"
+    }
+  }
+}
+
 provider "aws" {
   region = local.region
 }
@@ -33,18 +72,4 @@ provider "aws" {
 #     # This requires the awscli to be installed locally where Terraform is executed
 #     args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
 #   }
-# }
-
-data "aws_availability_zones" "available" {}
-data "aws_ecrpublic_authorization_token" "token" {
-  provider = aws.virginia
-}
-# management에서 생성된 KMS 키의 ARN 또는 동일 계정에서 생성한 Alias를 사용하여 Data Source를 정의
-# data "aws_kms_key" "ebs" {
-#   count  = var.enable_kms_ebs == true ? 0 : 1
-#   key_id = var.enable_kms_ebs == true ? "alias/ebs" : var.management_ebs_key_arn
-# }
-# data "aws_kms_key" "rds" {
-#   count  = var.enable_kms_rds == true ? 0 : 1
-#   key_id = var.enable_kms_ebs == true ? "alias/rds" : var.management_rds_key_arn
 # }

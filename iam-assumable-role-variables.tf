@@ -9,5 +9,19 @@ variable "create_iam_assumeable_role" {
 variable "iam_management_account_id" {
   description = "Management Account ID"
   type        = string
-  default     = "928933996765"
+  default     = ""
+}
+
+# Whether to create account password policy (True or False)
+variable "create_account_password_policy" {
+  description = "Whether to create account password policy"
+  type        = bool
+  default     = false
+}
+
+# Account Alias
+variable "account_alias" {
+  description = "Account Alias"
+  type        = string
+  default     = ""
 }

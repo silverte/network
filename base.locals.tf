@@ -10,6 +10,7 @@ locals {
     owners      = local.owners
     environment = local.environment
     service     = local.service
+    backup      = "false"
     cz-project  = local.service
     cz-owner    = local.owners
     cz-stage    = local.environment

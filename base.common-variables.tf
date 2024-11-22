@@ -24,3 +24,10 @@ variable "owners" {
   type        = string
   default     = "born2k"
 }
+
+# Account
+variable "accounts" {
+  description = "AWS Accounts"
+  type        = map(string)
+  default     = {}
+}

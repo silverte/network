@@ -8,11 +8,10 @@ module "vpc_dev" {
   create_vpc = var.create_vpc_dev
 
   # Details
-  name = "vpc-${var.service}-dev"
-  cidr = var.cidr_dev
-  azs  = local.azs
-  # public_subnets      = var.public_subnets_dev
-  private_subnets     = var.private_subnets_dev
+  name                = "vpc-${var.service}-dev"
+  cidr                = var.cidr_dev
+  azs                 = local.azs
+  private_subnets     = var.app_subnets_dev
   intra_subnets       = var.endpoint_subnets_dev
   database_subnets    = var.database_subnets_dev
   elasticache_subnets = var.elb_subnets_dev
@@ -29,8 +28,7 @@ module "vpc_dev" {
   create_redshift_subnet_group    = false
 
   # Tag subnets
-  # public_subnet_names      = ["sub-${var.service}-dev-pub-a", "sub-${var.service}-dev-pub-c"]
-  private_subnet_names     = ["sub-${var.service}-dev-pri-a", "sub-${var.service}-dev-pri-c"]
+  private_subnet_names     = ["sub-${var.service}-dev-app-a", "sub-${var.service}-dev-app-c"]
   database_subnet_names    = ["sub-${var.service}-dev-db-a", "sub-${var.service}-dev-db-c"]
   intra_subnet_names       = ["sub-${var.service}-dev-ep-a", "sub-${var.service}-dev-ep-c"]
   elasticache_subnet_names = ["sub-${var.service}-dev-elb-a", "sub-${var.service}-dev-elb-c"]
@@ -42,8 +40,7 @@ module "vpc_dev" {
   create_redshift_subnet_route_table    = true
 
   # Tag route table
-  # public_route_table_tags      = { "Name" : "route-${var.service}-dev-pub" }
-  private_route_table_tags     = { "Name" : "route-${var.service}-dev-pri" }
+  private_route_table_tags     = { "Name" : "route-${var.service}-dev-app" }
   database_route_table_tags    = { "Name" : "route-${var.service}-dev-db" }
   intra_route_table_tags       = { "Name" : "route-${var.service}-dev-ep" }
   elasticache_route_table_tags = { "Name" : "route-${var.service}-dev-elb" }
@@ -77,10 +74,6 @@ module "vpc_dev" {
       "Name" = "vpc-${var.service}-dev-flow-logs"
     }
   )
-
-  # public_subnet_tags = {
-  #   "kubernetes.io/role/elb" = 1
-  # }
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1

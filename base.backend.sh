@@ -2,7 +2,7 @@
 REGION=$(aws configure get region)
 
 # S3 버킷 생성
-aws s3api create-bucket --bucket s3-esp-terraform-state --region ${REGION} --create-bucket-configuration LocationConstraint=${REGION}
+aws s3api create-bucket --bucket s3-esp-network-terraform-state --region ${REGION} --create-bucket-configuration LocationConstraint=${REGION}
 
 # DynamoDB 생성(lock)
 aws dynamodb create-table \

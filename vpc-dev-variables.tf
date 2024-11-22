@@ -13,7 +13,7 @@ variable "public_subnets_dev" {
 }
 
 # VPC Private Subnets
-variable "private_subnets_dev" {
+variable "app_subnets_dev" {
   description = "A list of private subnets inside the VPC"
   type        = list(string)
   default     = [""]

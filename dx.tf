@@ -1,12 +1,10 @@
 # Direct Connect 연결 생성
 resource "aws_dx_connection" "connection" {
-  count     = var.create_dx_connection ? 1 : 0
-  name      = "dx-${var.service}-${var.environment}"
-  bandwidth = "1Gbps"
-  # location      = "LGKNX"
-  # provider_name = "KINX"
-  location      = "EqSe2-EQ"
-  provider_name = "Verizon"
+  count         = var.create_dx_connection ? 1 : 0
+  name          = "dx-${var.service}-${var.environment}"
+  bandwidth     = "1Gbps"
+  location      = "LGKNX"
+  provider_name = "KINX"
   tags = merge(
     local.tags,
     {
@@ -24,16 +22,16 @@ resource "aws_dx_gateway" "gateway" {
 
 # Transit Virtual Interface 생성
 resource "aws_dx_transit_virtual_interface" "vif" {
-  count            = var.create_dx_transit_virtual_interface ? 1 : 0
-  depends_on       = [aws_dx_connection.connection, aws_dx_gateway.gateway]
-  connection_id    = aws_dx_connection.connection[0].id
-  name             = "dxtvif-${var.service}"
-  vlan             = 100
-  address_family   = "ipv4"
-  bgp_asn          = 65000
-  amazon_address   = "169.254.254.1/30"
-  customer_address = "169.254.254.2/30"
-  dx_gateway_id    = aws_dx_gateway.gateway[0].id
+  count          = var.create_dx_transit_virtual_interface ? 1 : 0
+  depends_on     = [aws_dx_connection.connection, aws_dx_gateway.gateway]
+  connection_id  = aws_dx_connection.connection[0].id
+  name           = "dxtvif-${var.service}"
+  vlan           = 100
+  address_family = "ipv4"
+  bgp_asn        = 65000
+  # amazon_address   = "169.254.254.1/30"
+  # customer_address = "169.254.254.2/30"
+  dx_gateway_id = aws_dx_gateway.gateway[0].id
   tags = merge(
     local.tags,
     {

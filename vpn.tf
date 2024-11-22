@@ -7,9 +7,8 @@ module "vpn_gateway" {
   version               = "~> 3.0"
   create_vpn_connection = var.create_vpn_connection
 
-  vpc_id              = module.vpc_network.vpc_id
   transit_gateway_id  = module.tgw[0].ec2_transit_gateway_id
-  customer_gateway_id = module.vpc_network.cgw_ids[0]
+  customer_gateway_id = module.vpc_security.cgw_ids[0]
 
   tunnel_inside_ip_version = "ipv4"
   # tunnel inside cidr & preshared keys (optional)

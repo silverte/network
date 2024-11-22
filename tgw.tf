@@ -31,15 +31,15 @@ module "tgw" {
   )
 
   vpc_attachments = {
-    vpc_network = {
-      vpc_id       = module.vpc_network.vpc_id
-      subnet_ids   = module.vpc_network.redshift_subnets
+    vpc_security = {
+      vpc_id       = module.vpc_security.vpc_id
+      subnet_ids   = module.vpc_security.redshift_subnets
       dns_support  = true
       ipv6_support = false
       tags = merge(
         local.tags,
         {
-          Name = "tgwa-vpc-${var.service}-${var.environment}"
+          Name = "tgwa-vpc-${var.service}-security"
         }
       )
     },
@@ -53,13 +53,13 @@ module "tgw" {
         }
       )
     },
-    vpc_sandbox = {
-      vpc_id     = module.vpc_sandbox.vpc_id
-      subnet_ids = module.vpc_sandbox.redshift_subnets
+    vpc_shared = {
+      vpc_id     = module.vpc_shared.vpc_id
+      subnet_ids = module.vpc_shared.redshift_subnets
       tags = merge(
         local.tags,
         {
-          Name = "tgwa-vpc-${var.service}-sandbox"
+          Name = "tgwa-vpc-${var.service}-shared"
         }
       )
     },
@@ -79,7 +79,7 @@ module "tgw" {
 # hub route table association
 resource "aws_ec2_transit_gateway_route_table_association" "hub" {
   depends_on                     = [module.tgw]
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_network"].id
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
   transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
 }
 
@@ -94,7 +94,7 @@ resource "aws_ec2_transit_gateway_route" "hub_route_dev" {
 resource "aws_ec2_transit_gateway_route" "hub_route_sandbox" {
   depends_on                     = [module.tgw]
   destination_cidr_block         = "10.221.0.0/16"
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_sandbox"].id
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
   transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
 }
 
@@ -120,7 +120,7 @@ resource "aws_ec2_transit_gateway_route_table_association" "spoke_dev" {
 
 resource "aws_ec2_transit_gateway_route_table_association" "spoke_sandbox" {
   depends_on                     = [module.tgw]
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_sandbox"].id
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_shared"].id
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
 }
 
@@ -128,6 +128,6 @@ resource "aws_ec2_transit_gateway_route_table_association" "spoke_sandbox" {
 resource "aws_ec2_transit_gateway_route" "spoke_route" {
   depends_on                     = [module.tgw]
   destination_cidr_block         = "10.223.0.0/16"
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_network"].id
+  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
 }

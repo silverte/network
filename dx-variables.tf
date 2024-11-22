@@ -21,3 +21,5 @@ variable "create_dx_transit_virtual_interface" {
   type    = bool
   default = false
 }
+
+
