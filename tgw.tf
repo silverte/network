@@ -15,7 +15,9 @@ module "tgw" {
   transit_gateway_cidr_blocks = var.tgw_cidr_blocks
 
   # When "true" there is no need for RAM resources if using multiple AWS accounts
-  enable_auto_accept_shared_attachments = true
+  enable_auto_accept_shared_attachments = false
+  ram_allow_external_principals         = false
+  share_tgw                             = false
 
   # When "true", allows service discovery through IGMP
   enable_multicast_support = false
@@ -65,9 +67,6 @@ module "tgw" {
     },
   }
 
-  #   ram_allow_external_principals = true
-  #   ram_principals                = [307990089504]
-
   tags = merge(
     local.tags,
     {
@@ -76,58 +75,58 @@ module "tgw" {
   )
 }
 
-# hub route table association
-resource "aws_ec2_transit_gateway_route_table_association" "hub" {
-  depends_on                     = [module.tgw]
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
-  transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
-}
+# # hub route table association
+# resource "aws_ec2_transit_gateway_route_table_association" "hub" {
+#   depends_on                     = [module.tgw]
+#   transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
+#   transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
+# }
 
-# hub add route
-resource "aws_ec2_transit_gateway_route" "hub_route_dev" {
-  depends_on                     = [module.tgw]
-  destination_cidr_block         = "10.222.0.0/16"
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_dev"].id
-  transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
-}
+# # hub add route
+# resource "aws_ec2_transit_gateway_route" "hub_route_dev" {
+#   depends_on                     = [module.tgw]
+#   destination_cidr_block         = "10.222.0.0/16"
+#   transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_dev"].id
+#   transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
+# }
 
-resource "aws_ec2_transit_gateway_route" "hub_route_sandbox" {
-  depends_on                     = [module.tgw]
-  destination_cidr_block         = "10.221.0.0/16"
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
-  transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
-}
+# resource "aws_ec2_transit_gateway_route" "hub_route_sandbox" {
+#   depends_on                     = [module.tgw]
+#   destination_cidr_block         = "10.221.0.0/16"
+#   transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
+#   transit_gateway_route_table_id = module.tgw[0].ec2_transit_gateway_route_table_id
+# }
 
-# spoke route table
-resource "aws_ec2_transit_gateway_route_table" "spoke" {
-  depends_on         = [module.tgw]
-  transit_gateway_id = module.tgw[0].ec2_transit_gateway_id
+# # spoke route table
+# resource "aws_ec2_transit_gateway_route_table" "spoke" {
+#   depends_on         = [module.tgw]
+#   transit_gateway_id = module.tgw[0].ec2_transit_gateway_id
 
-  tags = merge(
-    local.tags,
-    {
-      Name = "tgwrt-${var.service}-${var.environment}-spoke"
-    }
-  )
-}
+#   tags = merge(
+#     local.tags,
+#     {
+#       Name = "tgwrt-${var.service}-${var.environment}-spoke"
+#     }
+#   )
+# }
 
-# spoke route table association
-resource "aws_ec2_transit_gateway_route_table_association" "spoke_dev" {
-  depends_on                     = [module.tgw]
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_dev"].id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
-}
+# # spoke route table association
+# resource "aws_ec2_transit_gateway_route_table_association" "spoke_dev" {
+#   depends_on                     = [module.tgw]
+#   transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_dev"].id
+#   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
+# }
 
-resource "aws_ec2_transit_gateway_route_table_association" "spoke_sandbox" {
-  depends_on                     = [module.tgw]
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_shared"].id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
-}
+# resource "aws_ec2_transit_gateway_route_table_association" "spoke_sandbox" {
+#   depends_on                     = [module.tgw]
+#   transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_shared"].id
+#   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
+# }
 
-# spoke add route
-resource "aws_ec2_transit_gateway_route" "spoke_route" {
-  depends_on                     = [module.tgw]
-  destination_cidr_block         = "10.223.0.0/16"
-  transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
-}
+# # spoke add route
+# resource "aws_ec2_transit_gateway_route" "spoke_route" {
+#   depends_on                     = [module.tgw]
+#   destination_cidr_block         = "10.223.0.0/16"
+#   transit_gateway_attachment_id  = module.tgw[0].ec2_transit_gateway_vpc_attachment["vpc_security"].id
+#   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.spoke.id
+# }

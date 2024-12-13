@@ -5,7 +5,7 @@ terraform {
   # Configure the S3 backend
   backend "s3" {
     bucket = "s3-esp-network-terraform-state"
-    key    = "terraform.tfstate"
+    key    = "network/terraform.tfstate"
     region = "ap-northeast-2"
   }
 

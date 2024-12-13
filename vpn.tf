@@ -23,13 +23,13 @@ module "vpn_gateway" {
   # Static routes for remote network
   vpn_connection_static_routes_only = true
   vpn_connection_static_routes_destinations = [
-    "10.65.10.0/24", "192.168.110.0/24", "192.168.111.0/24", "192.168.112.0/24"
+    "10.100.30.69/32", "10.100.10.204/32", "10.100.10.210/32", "10.100.10.197/32", "10.100.10.198/32"
   ]
 
   tags = merge(
     local.tags,
     {
-      Name = "vpn-${var.service}-${var.environment}"
+      Name = "vpn-${var.service}-${var.environment}-group"
     },
   )
 }

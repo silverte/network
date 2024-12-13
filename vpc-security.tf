@@ -67,7 +67,7 @@ module "vpc_security" {
   customer_gateway_tags = merge(
     local.tags,
     {
-      "Name" = "cgw-${var.service}-network"
+      "Name" = "cgw-${var.service}-network-group"
     }
   )
 

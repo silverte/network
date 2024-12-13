@@ -1,14 +1,14 @@
 # Direct Connect 연결 생성
 resource "aws_dx_connection" "connection" {
   count         = var.create_dx_connection ? 1 : 0
-  name          = "dx-${var.service}-${var.environment}"
+  name          = "dx-${var.service}-${var.environment}-office"
   bandwidth     = "1Gbps"
   location      = "LGKNX"
   provider_name = "KINX"
   tags = merge(
     local.tags,
     {
-      "Name" = "dx-${var.service}-${var.environment}"
+      "Name" = "dx-${var.service}-${var.environment}-office"
     }
   )
 }
@@ -35,7 +35,7 @@ resource "aws_dx_transit_virtual_interface" "vif" {
   tags = merge(
     local.tags,
     {
-      "Name" = "dxtvif-${var.service}-${var.environment}"
+      "Name" = "dxtvif-${var.service}-${var.environment}-office"
     }
   )
 }
