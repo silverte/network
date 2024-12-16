@@ -59,14 +59,21 @@ module "vpc_shared" {
   enable_dns_support   = true
 
   # Flow logs
-  enable_flow_log                       = var.enable_vpc_flow_log_shared
-  flow_log_destination_type             = "s3"
-  flow_log_destination_arn              = var.vpc_flow_log_s3_arn_shared
-  flow_log_max_aggregation_interval     = 600
-  vpc_flow_log_iam_role_name            = "role-${var.service}-shared-vpc-flow-log"
-  vpc_flow_log_iam_role_use_name_prefix = false
-  create_flow_log_cloudwatch_log_group  = true
-  create_flow_log_cloudwatch_iam_role   = true
+  enable_flow_log                                 = var.enable_vpc_flow_log_sandbox
+  flow_log_destination_type                       = "s3"
+  flow_log_destination_arn                        = var.vpc_flow_log_s3_arn_sandbox
+  flow_log_file_format                            = "plain-text"
+  flow_log_log_format                             = "$${version} $${vpc-id} $${subnet-id} $${instance-id} $${interface-id} $${account-id} $${type} $${srcaddr} $${dstport} $${srcport} $${dstaddr} $${pkt-dstaddr} $${pkt-srcaddr} $${protocol} $${bytes} $${packets} $${start} $${end} $${action} $${tcp-flags} $${log-status}"
+  flow_log_max_aggregation_interval               = 600
+  vpc_flow_log_iam_role_name                      = "role-${var.service}-shared-vpc-flow-log"
+  vpc_flow_log_iam_role_use_name_prefix           = false
+  create_flow_log_cloudwatch_log_group            = true
+  create_flow_log_cloudwatch_iam_role             = true
+  flow_log_cloudwatch_log_group_retention_in_days = 7
+  flow_log_cloudwatch_log_group_name_prefix       = "vpcFlowLog"
+  flow_log_cloudwatch_log_group_skip_destroy      = true
+  flow_log_traffic_type                           = "ALL"
+  flow_log_per_hour_partition                     = true
 
   vpc_flow_log_tags = merge(
     local.tags,
@@ -82,11 +89,13 @@ module "vpc_shared" {
   }
 
   # tags for the VPC
-  tags = {
-    owners      = local.owners
-    environment = "shared"
-    service     = local.service
-  }
+  tags = merge(
+    local.tags,
+    {
+      "Name"        = "vpc-${var.service}-shared",
+      "environment" = "shared"
+    }
+  )
 }
 
 # S3 Bucket
