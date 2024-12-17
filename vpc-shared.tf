@@ -92,7 +92,6 @@ module "vpc_shared" {
   tags = merge(
     local.tags,
     {
-      "Name"        = "vpc-${var.service}-shared",
       "environment" = "shared"
     }
   )

@@ -92,7 +92,6 @@ module "vpc_dev" {
   tags = merge(
     local.tags,
     {
-      "Name"        = "vpc-${var.service}-dev",
       "environment" = "dev"
     }
   )

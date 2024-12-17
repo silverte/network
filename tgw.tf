@@ -65,6 +65,36 @@ module "tgw" {
         }
       )
     },
+    # vpc_sandbox = {
+    #   vpc_id     = module.vpc_sandbox.vpc_id
+    #   subnet_ids = module.vpc_sandbox.redshift_subnets
+    #   tags = merge(
+    #     local.tags,
+    #     {
+    #       Name = "tgwa-vpc-${var.service}-sandbox"
+    #     }
+    #   )
+    # },
+    # vpc_prd = {
+    #   vpc_id     = module.vpc_prd.vpc_id
+    #   subnet_ids = module.vpc_prd.redshift_subnets
+    #   tags = merge(
+    #     local.tags,
+    #     {
+    #       Name = "tgwa-vpc-${var.service}-prd"
+    #     }
+    #   )
+    # },
+    # vpc_stg = {
+    #   vpc_id     = module.vpc_stg.vpc_id
+    #   subnet_ids = module.vpc_stg.redshift_subnets
+    #   tags = merge(
+    #     local.tags,
+    #     {
+    #       Name = "tgwa-vpc-${var.service}-stg"
+    #     }
+    #   )
+    # },
   }
 
   tags = merge(

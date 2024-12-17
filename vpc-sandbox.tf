@@ -92,7 +92,6 @@ module "vpc_sandbox" {
   tags = merge(
     local.tags,
     {
-      "Name"        = "vpc-${var.service}-sandbox",
       "environment" = "sandbox"
     }
   )
@@ -183,45 +182,4 @@ module "vpc_endpoints_sandbox" {
     #     }
     # }
   )
-}
-
-resource "aws_iam_role" "vpc_flow_logs_role" {
-  name = "role-${var.service}-sandbox-vpc-flow-log"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect    = "Allow",
-        Principal = { Service = "vpc-flow-logs.amazonaws.com" },
-        Action    = "sts:AssumeRole"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "vpc_flow_logs_policy" {
-  name = "policy-${var.service}-sandbox-vpc-flow-log"
-  role = aws_iam_role.vpc_flow_logs_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect   = "Allow",
-        Action   = ["s3:PutObject"],
-        Resource = ["${var.vpc_flow_log_s3_arn_sandbox}", "${var.vpc_flow_log_s3_arn_sandbox}/*"]
-        Condition = {
-          StringEquals : {
-            "s3:x-amz-acl" : "bucket-owner-full-control"
-          }
-        }
-      },
-      {
-        Effect : "Allow",
-        Action   = ["s3:GetBucketAcl", "s3:ListBucket"],
-        Resource = "${var.vpc_flow_log_s3_arn_sandbox}"
-      }
-    ]
-  })
 }
