@@ -170,15 +170,26 @@ module "vpc_endpoints_shared" {
       { "Name" = "ep-${var.service}-shared-gw-s3" })
     }
     },
+    # { for service in toset(["ec2messages", "ssm", "ssmmessages"]) :
+    #   replace(service, ".", "_") =>
+    #   {
+    #     service             = service
+    #     subnet_ids          = module.vpc_shared.intra_subnets
+    #     private_dns_enabled = true
+    #     tags = merge(
+    #       local.tags,
+    #     { Name = "ep-${var.service}-shared-${service}" })
+    #   }
+    # }
     #   { for service in toset(["autoscaling", "ecr.api", "ecr.dkr", "ec2", "ec2messages", "elasticloadbalancing", "sts", "kms", "logs", "ssm", "ssmmessages"]) :
     #     replace(service, ".", "_") =>
     #     {
     #       service             = service
-    #       subnet_ids          = module.vpc.infra_subnets
+    #       subnet_ids          = module.vpc_shared.intra_subnets
     #       private_dns_enabled = true
     #       tags = merge(
     #         local.tags,
-    #       { Name = "$ep-${var.service}-${var.environment}-${service}" })
+    #       { Name = "ep-${var.service}-${var.environment}-${service}" })
     #     }
     # }
   )

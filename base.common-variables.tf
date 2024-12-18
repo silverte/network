@@ -31,3 +31,10 @@ variable "accounts" {
   type        = map(string)
   default     = {}
 }
+
+# Map 2.0 Tag
+variable "map_migrated" {
+  description = "map-migrated"
+  type        = string
+  default     = "migM6LD1XNIQQ"
+}
