@@ -35,8 +35,9 @@ module "vpc_security" {
   redshift_subnet_names = ["sub-${var.service}-security-tgw-a", "sub-${var.service}-security-tgw-c"]
 
   # Routing
-  create_database_subnet_route_table = true
-  create_redshift_subnet_route_table = true
+  create_database_subnet_route_table  = true
+  create_redshift_subnet_route_table  = true
+  create_multiple_public_route_tables = true
 
   # Tag route table
   public_route_table_tags   = { "Name" : "route-${var.service}-security-pub" }
@@ -58,21 +59,23 @@ module "vpc_security" {
   enable_dns_support   = true
 
   # Flow logs
-  enable_flow_log                                 = var.enable_vpc_flow_log_sandbox
-  flow_log_destination_type                       = "s3"
-  flow_log_destination_arn                        = var.vpc_flow_log_s3_arn_sandbox
-  flow_log_file_format                            = "plain-text"
-  flow_log_log_format                             = "$${version} $${vpc-id} $${subnet-id} $${instance-id} $${interface-id} $${account-id} $${type} $${srcaddr} $${dstport} $${srcport} $${dstaddr} $${pkt-dstaddr} $${pkt-srcaddr} $${protocol} $${bytes} $${packets} $${start} $${end} $${action} $${tcp-flags} $${log-status}"
-  flow_log_max_aggregation_interval               = 600
-  vpc_flow_log_iam_role_name                      = "role-${var.service}-security-vpc-flow-log"
-  vpc_flow_log_iam_role_use_name_prefix           = false
-  create_flow_log_cloudwatch_log_group            = true
-  create_flow_log_cloudwatch_iam_role             = true
-  flow_log_cloudwatch_log_group_retention_in_days = 7
-  flow_log_cloudwatch_log_group_name_prefix       = "vpcFlowLog"
-  flow_log_cloudwatch_log_group_skip_destroy      = true
-  flow_log_traffic_type                           = "ALL"
-  flow_log_per_hour_partition                     = true
+  enable_flow_log                         = var.enable_vpc_flow_log_security
+  flow_log_destination_type               = "s3"
+  flow_log_destination_arn                = var.vpc_flow_log_s3_arn_security
+  flow_log_file_format                    = "plain-text"
+  flow_log_log_format                     = "$${version} $${vpc-id} $${subnet-id} $${instance-id} $${interface-id} $${account-id} $${type} $${srcaddr} $${dstport} $${srcport} $${dstaddr} $${pkt-dstaddr} $${pkt-srcaddr} $${protocol} $${bytes} $${packets} $${start} $${end} $${action} $${tcp-flags} $${log-status}"
+  flow_log_max_aggregation_interval       = 600
+  vpc_flow_log_iam_role_name              = "role-${var.service}-security-vpc-flow-log"
+  vpc_flow_log_iam_role_use_name_prefix   = false
+  vpc_flow_log_iam_policy_name            = "policy-${var.service}-security-vpc-flow-log"
+  vpc_flow_log_iam_policy_use_name_prefix = false
+  # create_flow_log_cloudwatch_log_group            = true
+  # create_flow_log_cloudwatch_iam_role             = true
+  # flow_log_cloudwatch_log_group_retention_in_days = 7
+  # flow_log_cloudwatch_log_group_name_prefix       = "vpcFlowLog"
+  # flow_log_cloudwatch_log_group_skip_destroy      = true
+  flow_log_traffic_type       = "ALL"
+  flow_log_per_hour_partition = true
 
   vpc_flow_log_tags = merge(
     local.tags,
