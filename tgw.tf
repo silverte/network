@@ -35,7 +35,7 @@ module "tgw" {
   vpc_attachments = {
     vpc_security = {
       vpc_id       = module.vpc_security.vpc_id
-      subnet_ids   = module.vpc_security.redshift_subnets
+      subnet_ids   = module.vpc_security.intra_subnets
       dns_support  = true
       ipv6_support = false
       tags = merge(

@@ -13,9 +13,9 @@ module "vpc_security" {
   azs              = local.azs
   public_subnets   = var.public_subnets_security
   private_subnets  = var.app_subnets_security
-  intra_subnets    = var.endpoint_subnets_security
+  intra_subnets    = var.tgw_attach_subnets_security
   database_subnets = var.waf_subnets_security
-  redshift_subnets = var.tgw_attach_subnets_security
+  redshift_subnets = var.endpoint_subnets_security
 
   manage_default_route_table    = false
   manage_default_network_acl    = false
@@ -31,20 +31,21 @@ module "vpc_security" {
   public_subnet_names   = ["sub-${var.service}-security-pub-a", "sub-${var.service}-security-pub-c"]
   private_subnet_names  = ["sub-${var.service}-security-app-a", "sub-${var.service}-security-app-c"]
   database_subnet_names = ["sub-${var.service}-security-waf-a", "sub-${var.service}-security-waf-c"]
-  intra_subnet_names    = ["sub-${var.service}-security-ep-a", "sub-${var.service}-security-ep-c"]
-  redshift_subnet_names = ["sub-${var.service}-security-tgw-a", "sub-${var.service}-security-tgw-c"]
+  intra_subnet_names    = ["sub-${var.service}-security-tgw-a", "sub-${var.service}-security-tgw-c"]
+  redshift_subnet_names = ["sub-${var.service}-security-ep-a", "sub-${var.service}-security-ep-c"]
 
   # Routing
   create_database_subnet_route_table  = true
   create_redshift_subnet_route_table  = true
   create_multiple_public_route_tables = true
+  create_multiple_intra_route_tables  = true
 
   # Tag route table
   public_route_table_tags   = { "Name" : "route-${var.service}-security-pub" }
   private_route_table_tags  = { "Name" : "route-${var.service}-security-app" }
   database_route_table_tags = { "Name" : "route-${var.service}-security-waf" }
-  intra_route_table_tags    = { "Name" : "route-${var.service}-security-ep" }
-  redshift_route_table_tags = { "Name" : "route-${var.service}-security-tgw" }
+  intra_route_table_tags    = { "Name" : "route-${var.service}-security-tgw" }
+  redshift_route_table_tags = { "Name" : "route-${var.service}-security-ep" }
 
   igw_tags = { "Name" : "igw-${var.service}-security" }
 
