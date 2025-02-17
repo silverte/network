@@ -117,3 +117,36 @@ variable "shared_elb_subnet_ips" {
   type        = list(string)
   default     = []
 }
+
+##################################################################
+# VPC CIDR Prefix List
+##################################################################
+variable "security_vpc_cidr_ips" {
+  description = "List of VPC CIDR ips"
+  type        = list(string)
+  default     = []
+}
+
+variable "shared_vpc_cidr_ips" {
+  description = "List of VPC CIDR ips"
+  type        = list(string)
+  default     = []
+}
+
+variable "dev_vpc_cidr_ips" {
+  description = "List of VPC CIDR ips"
+  type        = list(string)
+  default     = []
+}
+
+variable "stg_vpc_cidr_ips" {
+  description = "List of VPC CIDR ips"
+  type        = list(string)
+  default     = []
+}
+
+variable "prd_vpc_cidr_ips" {
+  description = "List of VPC CIDR ips"
+  type        = list(string)
+  default     = []
+}

@@ -2,50 +2,50 @@
 ##################################################################
 # Common Prefix List
 ##################################################################
-resource "aws_ec2_managed_prefix_list" "prx_esp_office_ip" {
-  count          = var.create_prefix_lists ? 1 : 0
-  name           = "prx-${var.service}-office-ip"
-  address_family = "IPv4"
-  max_entries    = length(var.office_ip_ips)
+# resource "aws_ec2_managed_prefix_list" "prx_esp_office_ip" {
+#   count          = var.create_prefix_lists ? 1 : 0
+#   name           = "prx-${var.service}-office-ip"
+#   address_family = "IPv4"
+#   max_entries    = length(var.office_ip_ips)
 
-  dynamic "entry" {
-    for_each = var.office_ip_ips
-    content {
-      cidr        = entry.value
-      description = "office #${entry.key + 1}"
-    }
-  }
+#   dynamic "entry" {
+#     for_each = var.office_ip_ips
+#     content {
+#       cidr        = entry.value
+#       description = "office #${entry.key + 1}"
+#     }
+#   }
 
-  tags = merge(
-    local.tags,
-    {
-      "Name" = "prx-${var.service}-office-ip",
-    }
-  )
-}
+#   tags = merge(
+#     local.tags,
+#     {
+#       "Name" = "prx-${var.service}-office-ip",
+#     }
+#   )
+# }
 
 
-resource "aws_ec2_managed_prefix_list" "prx_esp_dbsafer_ip" {
-  count          = var.create_prefix_lists ? 1 : 0
-  name           = "prx-${var.service}-dbsafer-ip"
-  address_family = "IPv4"
-  max_entries    = length(var.dbsafer_ips)
+# resource "aws_ec2_managed_prefix_list" "prx_esp_dbsafer_ip" {
+#   count          = var.create_prefix_lists ? 1 : 0
+#   name           = "prx-${var.service}-dbsafer-ip"
+#   address_family = "IPv4"
+#   max_entries    = length(var.dbsafer_ips)
 
-  dynamic "entry" {
-    for_each = var.dbsafer_ips
-    content {
-      cidr        = entry.value
-      description = "dbsafer #${entry.key + 1}"
-    }
-  }
+#   dynamic "entry" {
+#     for_each = var.dbsafer_ips
+#     content {
+#       cidr        = entry.value
+#       description = "dbsafer #${entry.key + 1}"
+#     }
+#   }
 
-  tags = merge(
-    local.tags,
-    {
-      "Name" = "prx-${var.service}-dbsafer-ip",
-    }
-  )
-}
+#   tags = merge(
+#     local.tags,
+#     {
+#       "Name" = "prx-${var.service}-dbsafer-ip",
+#     }
+#   )
+# }
 
 ##################################################################
 # Dev Subnet Prefix List
@@ -406,6 +406,116 @@ resource "aws_ec2_managed_prefix_list" "pl_esp_sub_shared_elb_ip" {
     local.tags,
     {
       "Name" = "pl-${var.service}-shared-sub-elb-ip",
+    }
+  )
+}
+
+resource "aws_ec2_managed_prefix_list" "pl_esp_vpc_shared_ip" {
+  count          = var.create_prefix_lists ? 1 : 0
+  name           = "pl-${var.service}-shared-vpc-ip"
+  address_family = "IPv4"
+  max_entries    = length(var.shared_vpc_cidr_ips)
+
+  dynamic "entry" {
+    for_each = var.shared_vpc_cidr_ips
+    content {
+      cidr        = entry.value
+      description = "shared vpc cidr"
+    }
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "pl-${var.service}-shared-vpc-ip",
+    }
+  )
+}
+
+resource "aws_ec2_managed_prefix_list" "pl_esp_vpc_security_ip" {
+  count          = var.create_prefix_lists ? 1 : 0
+  name           = "pl-${var.service}-security-vpc-ip"
+  address_family = "IPv4"
+  max_entries    = length(var.security_vpc_cidr_ips)
+
+  dynamic "entry" {
+    for_each = var.security_vpc_cidr_ips
+    content {
+      cidr        = entry.value
+      description = "security vpc cidr"
+    }
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "pl-${var.service}-security-vpc-ip",
+    }
+  )
+}
+
+resource "aws_ec2_managed_prefix_list" "pl_esp_vpc_dev_ip" {
+  count          = var.create_prefix_lists ? 1 : 0
+  name           = "pl-${var.service}-dev-vpc-ip"
+  address_family = "IPv4"
+  max_entries    = length(var.dev_vpc_cidr_ips)
+
+  dynamic "entry" {
+    for_each = var.dev_vpc_cidr_ips
+    content {
+      cidr        = entry.value
+      description = "dev vpc cidr"
+    }
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "pl-${var.service}-dev-vpc-ip",
+    }
+  )
+}
+
+resource "aws_ec2_managed_prefix_list" "pl_esp_vpc_stg_ip" {
+  count          = var.create_prefix_lists ? 1 : 0
+  name           = "pl-${var.service}-stg-vpc-ip"
+  address_family = "IPv4"
+  max_entries    = length(var.stg_vpc_cidr_ips)
+
+  dynamic "entry" {
+    for_each = var.stg_vpc_cidr_ips
+    content {
+      cidr        = entry.value
+      description = "stg vpc cidr"
+    }
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "pl-${var.service}-stg-vpc-ip",
+    }
+  )
+}
+
+resource "aws_ec2_managed_prefix_list" "pl_esp_vpc_prd_ip" {
+  count          = var.create_prefix_lists ? 1 : 0
+  name           = "pl-${var.service}-prd-vpc-ip"
+  address_family = "IPv4"
+  max_entries    = length(var.prd_vpc_cidr_ips)
+
+  dynamic "entry" {
+    for_each = var.prd_vpc_cidr_ips
+    content {
+      cidr        = entry.value
+      description = "prd vpc cidr"
+    }
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "pl-${var.service}-prd-vpc-ip",
     }
   )
 }
