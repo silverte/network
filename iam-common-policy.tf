@@ -63,7 +63,8 @@ module "iam_policy_restrict_region" {
               "StringNotEquals": {
                   "aws:RequestedRegion": [
                       "ap-northeast-2",
-                      "us-east-1"
+                      "us-east-1",
+                      "us-west-2"
                   ]
               }
           },
